@@ -1,24 +1,24 @@
-registerShader('Mandelbrot Orbit Traps', `
+registerShadertoy('Mandelbrot Orbit Traps', `
 // Based on geometric orbit traps in the Mandelbrot set by Inigo Quilez
 // Educational implementation
 
 // antialiasing level (squared)
 #define AA 3
 
-void main() {
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec3 col = vec3(0.0);
     
     for(int m = 0; m < AA; m++)
     for(int n = 0; n < AA; n++)
     {
-        vec2 p = (2.0*(FC.xy+vec2(float(m),float(n))/float(AA))-r.xy) / r.y;
+        vec2 p = (2.0*(fragCoord.xy+vec2(float(m),float(n))/float(AA))-iResolution.xy) / iResolution.y;
 
-        float zoo = 1.0/(350.0 - 250.0*sin(0.25*t-0.3));
+        float zoo = 1.0/(350.0 - 250.0*sin(0.25*iTime-0.3));
         
         vec2 cc = vec2(-0.533516,0.526141) + p*zoo;
 
         vec2 t2c = vec2(-0.5,2.0);
-        t2c += 0.5*vec2(cos(0.13*(t-10.0)), sin(0.13*(t-10.0)));
+        t2c += 0.5*vec2(cos(0.13*(iTime-10.0)), sin(0.13*(iTime-10.0)));
             
         // iterate
         vec2 z  = vec2(0.0);
@@ -61,5 +61,5 @@ void main() {
     
     col /= float(AA*AA);
     
-    o = vec4(col, 1.0);
+    fragColor = vec4(col, 1.0);
 }`);

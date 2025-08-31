@@ -1,4 +1,4 @@
-registerShader('Volumetric Terrain', `
+registerShadertoy('Volumetric Terrain', `
 // Simplified single-pass version of IQ's volumetric terrain
 // Based on sphere SDF technique from https://iquilezles.org/articles/fbmsdf
 
@@ -167,11 +167,11 @@ mat3 setCamera(vec3 ro, vec3 ta, float cr) {
     return mat3(cu, cv, cw);
 }
 
-void main() {
-    vec2 p = (2.0 * FC.xy - r.xy) / r.y;
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 p = (2.0 * fragCoord.xy - iResolution.xy) / iResolution.y;
     
     // Animated camera
-    float time = t * 0.5;
+    float time = iTime * 0.5;
     vec3 ro = vec3(2.0 * cos(time * 0.3), 0.2, 2.0 * sin(time * 0.3));
     vec3 ta = vec3(0.0, -0.1, 0.0);
     
@@ -225,7 +225,7 @@ void main() {
             ks = 0.8;
             
             // Simple wave normal perturbation
-            nor.xz += 0.1 * sin(pos.xz * 10.0 + t * 2.0) * vec2(1.0, 0.7);
+            nor.xz += 0.1 * sin(pos.xz * 10.0 + iTime * 2.0) * vec2(1.0, 0.7);
             nor = normalize(nor);
         }
         
@@ -282,8 +282,8 @@ void main() {
     col = col * col * (3.0 - 2.0 * col);
     
     // Vignette
-    vec2 q = FC.xy / r.xy;
+    vec2 q = fragCoord.xy / iResolution.xy;
     col *= 0.5 + 0.5 * pow(16.0 * q.x * q.y * (1.0 - q.x) * (1.0 - q.y), 0.1);
     
-    o = vec4(col, 1.0);
+    fragColor = vec4(col, 1.0);
 }`);

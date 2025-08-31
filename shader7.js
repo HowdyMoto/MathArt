@@ -1,4 +1,4 @@
-registerShader('Fractal Tunnel', `
+registerShadertoy('Fractal Tunnel', `
 #define MAXDIST 50.0
 
 // from netgrind
@@ -65,7 +65,7 @@ void pR(inout vec2 p, float a) {
 float fractal(vec3 p) {
     const int iterations = 20;
     
-    float d = t * 5.0 - p.z;
+    float d = iTime * 5.0 - p.z;
     p = p.yxz;
     pR(p.yz, 1.570795);
     p.x += 6.5;
@@ -165,18 +165,18 @@ mat3 camera(vec3 ro, vec3 rd, float rot) {
     return mat3(x, y, forward);
 }
 
-void main() {
-    vec2 uv = FC.xy / r;
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = fragCoord.xy / iResolution;
     uv = uv * 2.0 - 1.0;
-    uv.x *= r.x / r.y;
+    uv.x *= iResolution.x / iResolution.y;
     uv.y -= uv.x * uv.x * 0.15;
     
-    vec3 camPos = vec3(3.0, -1.5, t * 5.0);
+    vec3 camPos = vec3(3.0, -1.5, iTime * 5.0);
     vec3 camDir = camPos + vec3(-1.25, 0.1, 1.0);
     mat3 cam = camera(camPos, camDir, 0.0);
     vec3 rayDir = cam * normalize(vec3(uv, 0.8));
     
     vec4 col = render(camPos, rayDir);
     
-    o = vec4(col.xyz, 1.0);
+    fragColor = vec4(col.xyz, 1.0);
 }`);

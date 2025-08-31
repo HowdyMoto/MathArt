@@ -1,10 +1,10 @@
-registerShader('Wave Tunnel', `
-void main() {
-    vec2 uv = (FC.xy - r * 0.5) / r.y;
+registerShadertoy('Wave Tunnel', `
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 uv = (fragCoord.xy - iResolution * 0.5) / iResolution.y;
     vec3 col = vec3(0.0);
     
     // Create tunnel perspective
-    float z = t * 2.0;
+    float z = iTime * 2.0;
     vec2 p = uv;
     float tunnel = 1.0 / (length(p) + 0.1);
     
@@ -47,5 +47,5 @@ void main() {
     // Brightness and contrast
     col = pow(col * 1.5, vec3(0.8));
     
-    o = vec4(col, 1.0);
+    fragColor = vec4(col, 1.0);
 }`);

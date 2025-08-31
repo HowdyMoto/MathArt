@@ -1,11 +1,11 @@
-registerShader('Seascape', `
+registerShadertoy('Seascape', `
 // "Seascape" by Alexander Alekseev aka TDM - 2014
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 
 const int NUM_STEPS = 32;
 const float PI = 3.141592;
 const float EPSILON = 1e-3;
-#define EPSILON_NRM (0.1 / r.x)
+#define EPSILON_NRM (0.1 / iResolution.x)
 
 // sea
 const int ITER_GEOMETRY = 3;
@@ -16,7 +16,7 @@ const float SEA_SPEED = 0.8;
 const float SEA_FREQ = 0.16;
 const vec3 SEA_BASE = vec3(0.0,0.09,0.18);
 const vec3 SEA_WATER_COLOR = vec3(0.8,0.9,0.6)*0.6;
-#define SEA_TIME (1.0 + t * SEA_SPEED)
+#define SEA_TIME (1.0 + iTime * SEA_SPEED)
 const mat2 octave_m = mat2(1.6,1.2,-1.2,1.6);
 
 // math
@@ -164,9 +164,9 @@ float heightMapTracing(vec3 ori, vec3 dir, out vec3 p) {
 }
 
 vec3 getPixel(in vec2 coord, float time) {    
-    vec2 uv = coord / r.xy;
+    vec2 uv = coord / iResolution.xy;
     uv = uv * 2.0 - 1.0;
-    uv.x *= r.x / r.y;    
+    uv.x *= iResolution.x / iResolution.y;    
         
     // ray
     vec3 ang = vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time);    
@@ -189,11 +189,11 @@ vec3 getPixel(in vec2 coord, float time) {
         pow(smoothstep(0.0,-0.02,dir.y),0.2));
 }
 
-void main() {
-    float time = t * 0.3;
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    float time = iTime * 0.3;
     
-    vec3 color = getPixel(FC.xy, time);
+    vec3 color = getPixel(fragCoord.xy, time);
     
     // post
-    o = vec4(pow(color,vec3(0.65)), 1.0);
+    fragColor = vec4(pow(color,vec3(0.65)), 1.0);
 }`);

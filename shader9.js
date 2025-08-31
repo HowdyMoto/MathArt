@@ -1,4 +1,4 @@
-registerShader('Mirror Fractal', `
+registerShadertoy('Mirror Fractal', `
 // Mirror-like "Happy Accident" Shader (CC0)
 // A shiny reflective variation of a raymarched fractal accident
 
@@ -18,9 +18,9 @@ vec3 estimateNormal(vec3 p) {
     ));
 }
 
-void main() {
-    vec2 C = FC.xy;
-    vec2 uv = (C - 0.5 * r) / r.y;
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 C = fragCoord.xy;
+    vec2 uv = (C - 0.5 * iResolution) / iResolution.y;
 
     float z = fract(dot(C, sin(C))) - 0.5;
     vec4 col = vec4(0.0);
@@ -30,8 +30,8 @@ void main() {
         float fi = float(i);
         
         // Ray direction
-        p = vec4(z * normalize(vec3(C - 0.7 * r, r.y)), 0.1 * t);
-        p.z += t;
+        p = vec4(z * normalize(vec3(C - 0.7 * iResolution, iResolution.y)), 0.1 * iTime);
+        p.z += iTime;
 
         vec4 q = p;
 
@@ -79,5 +79,5 @@ void main() {
     vec3 x = col.rgb / 2e4;
     vec3 exp_pos = exp(x);
     vec3 exp_neg = exp(-x);
-    o = vec4((exp_pos - exp_neg) / (exp_pos + exp_neg), 1.0);
+    fragColor = vec4((exp_pos - exp_neg) / (exp_pos + exp_neg), 1.0);
 }`);
