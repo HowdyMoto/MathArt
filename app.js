@@ -67,6 +67,39 @@ function createProgram(gl, vertexShader, fragmentShader) {
     return program;
 }
 
+// Global variables for UI visibility management
+let uiTimeout = null;
+let lastMouseMove = Date.now();
+
+// Function to show UI elements
+function showUI() {
+    const controls = document.getElementById('controls');
+    const instructions = document.getElementById('instructions');
+    
+    if (controls) {
+        controls.style.opacity = '1';
+    }
+    
+    if (instructions) {
+        instructions.style.opacity = '1';
+    }
+    
+    // Clear existing timeout
+    if (uiTimeout) {
+        clearTimeout(uiTimeout);
+    }
+    
+    // Hide after 3 seconds
+    uiTimeout = setTimeout(() => {
+        if (controls) {
+            controls.style.opacity = '0';
+        }
+        if (instructions) {
+            instructions.style.opacity = '0';
+        }
+    }, 3000);
+}
+
 // Loads and compiles a shader by index from our shaders array
 function loadShader(index) {
     if (index < 0 || index >= shaders.length) return;
@@ -76,23 +109,8 @@ function loadShader(index) {
     document.getElementById('shaderName').textContent = shader.name;
     document.getElementById('shaderInfo').textContent = `${index + 1} / ${shaders.length}`;
     
-    // Show controls and instructions, then fade them out after 3 seconds
-    const controls = document.getElementById('controls');
-    const instructions = document.getElementById('instructions');
-    
-    if (controls) {
-        controls.style.opacity = '1';
-        setTimeout(() => {
-            controls.style.opacity = '0';
-        }, 3000);
-    }
-    
-    if (instructions) {
-        instructions.style.opacity = '1';
-        setTimeout(() => {
-            instructions.style.opacity = '0';
-        }, 3000);
-    }
+    // Show UI when loading a new shader
+    showUI();
     
     // Check if this is a Shadertoy-format shader
     const isShadertoy = shader.fragmentSource.includes('mainImage');
@@ -285,6 +303,16 @@ function init() {
             nextShader();
         } else if (e.key === 'ArrowLeft') {
             previousShader();
+        }
+    });
+    
+    // Set up mouse movement detection to show UI
+    window.addEventListener('mousemove', (e) => {
+        const now = Date.now();
+        // Only show UI if mouse actually moved (not just tiny movements)
+        if (now - lastMouseMove > 100) {  // Throttle to avoid too frequent updates
+            showUI();
+            lastMouseMove = now;
         }
     });
     
