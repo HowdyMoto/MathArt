@@ -265,6 +265,20 @@ function init() {
         return;
     }
     
+    // Detect if device is mobile/touch-enabled and update instructions
+    const isTouchDevice = ('ontouchstart' in window) || 
+                         (navigator.maxTouchPoints > 0) || 
+                         (navigator.msMaxTouchPoints > 0);
+    
+    const instructionText = document.getElementById('instructionText');
+    if (instructionText) {
+        if (isTouchDevice) {
+            instructionText.textContent = 'Swipe ← → to navigate shaders';
+        } else {
+            instructionText.textContent = 'Use ← → arrow keys to navigate shaders';
+        }
+    }
+    
     // Set up keyboard controls for navigation
     window.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowRight') {
@@ -272,6 +286,37 @@ function init() {
         } else if (e.key === 'ArrowLeft') {
             previousShader();
         }
+    });
+    
+    // Set up touch/swipe controls for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const minSwipeDistance = 50; // Minimum distance for a swipe to register
+    
+    canvas.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    
+    canvas.addEventListener('touchmove', (e) => {
+        touchEndX = e.touches[0].clientX;
+    }, { passive: true });
+    
+    canvas.addEventListener('touchend', () => {
+        const swipeDistance = touchEndX - touchStartX;
+        
+        if (Math.abs(swipeDistance) > minSwipeDistance) {
+            if (swipeDistance > 0) {
+                // Swiped right - go to previous shader
+                previousShader();
+            } else {
+                // Swiped left - go to next shader
+                nextShader();
+            }
+        }
+        
+        // Reset touch positions
+        touchStartX = 0;
+        touchEndX = 0;
     });
     
     // Handle window resizing
