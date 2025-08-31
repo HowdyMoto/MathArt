@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLSL Shader Gallery</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            font-family: monospace;
+        }
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            transition: opacity 0.5s ease-out;
+        }
+        #shaderName {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        #shaderInfo {
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+        #instructions {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            transition: opacity 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="glCanvas"></canvas>
+    <div id="controls">
+        <div id="shaderName">Loading...</div>
+        <div id="shaderInfo">0 / 0</div>
+    </div>
+    <div id="instructions">
+        Use ← → arrow keys to navigate shaders
+    </div>
+    <div id="shaderError" style="
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 0, 0, 0.9);
+        color: white;
+        padding: 20px;
+        border-radius: 5px;
+        font-family: monospace;
+        max-width: 80%;
+        white-space: pre-wrap;
+    "></div>
+    <script src="app.js"></script>
+    <script src="shader1.js"></script>
+    <script src="shader2.js"></script>
+    <script src="shader3.js"></script>
+    <script src="shader4.js"></script>
+    <script src="shader5.js"></script>
+    <script src="shader6.js"></script>
+    <script src="shader7.js"></script>
+    <script src="shader8.js"></script>
+    <script src="shader9.js"></script>
+    <script src="shader10.js"></script>
+    <script src="shader11.js"></script>
+    <script src="shader12.js"></script>
+    
+    <!-- Auto-reload in development -->
+    <script>
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+            // Check for file changes every second
+            let lastModified = null;
+            setInterval(async () => {
+                try {
+                    const response = await fetch(location.href, { method: 'HEAD' });
+                    const modified = response.headers.get('last-modified');
+                    if (lastModified && modified !== lastModified) {
+                        location.reload();
+                    }
+                    lastModified = modified;
+                } catch (e) {}
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
