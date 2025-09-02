@@ -363,5 +363,5 @@ function init() {
 // Wait for page to load, then initialize with a small delay
 // (to ensure all shader files have been loaded and registered)
 window.addEventListener('load', () => {
-    setTimeout(init, 100);
+    setTimeout(init, 200);
 });
